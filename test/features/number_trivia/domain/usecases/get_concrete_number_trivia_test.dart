@@ -7,7 +7,8 @@ import 'package:number_trivia/features/number_trivia/domain/repositories/number_
 
 import 'package:number_trivia/features/number_trivia/domain/usecases/get_concrete_number_trivia.dart';
 
-class MockNumberTriviaRespository extends Mock implements NumberTriviaRepository {}
+class MockNumberTriviaRespository extends Mock
+    implements NumberTriviaRepository {}
 
 void main() {
   late GetConcreteNumberTrivia usecase;
@@ -18,22 +19,21 @@ void main() {
     usecase = GetConcreteNumberTrivia(repository: mockNumberTriviaRespository);
   });
 
-  const tNumber = 1;
+  const tNumber = 1; // This is a non-nullable int
   const tNumberTrivia = NumberTrivia(number: 1, text: "test");
 
   test("should get trivia for the number from the repository", () async {
     // Arrange
-when(mockNumberTriviaRespository.getConcreteNumberTrivia(any ))
-    .thenAnswer((_) async => const Right(tNumberTrivia));
+    when(mockNumberTriviaRespository.getConcreteNumberTrivia(tNumber))
+        .thenAnswer((_) async => const Right(tNumberTrivia));
 
-
-    
     // Act
     final result = await usecase.execute(number: tNumber);
 
     // Assert
-    expect(result,  const Right(tNumberTrivia));
-    verify(mockNumberTriviaRespository.getConcreteNumberTrivia(tNumber));
+    expect(result, const Right(tNumberTrivia));
+    verify(mockNumberTriviaRespository.getConcreteNumberTrivia(tNumber))
+        .called(1);
     verifyNoMoreInteractions(mockNumberTriviaRespository);
   });
 }
