@@ -4,7 +4,9 @@ import 'package:mockito/mockito.dart';
 import 'package:number_trivia/core/platform/network_info.dart';
 import 'package:number_trivia/features/number_trivia/data/datasources/number_trivia_local_data_source.dart';
 import 'package:number_trivia/features/number_trivia/data/datasources/number_trivia_remote_data_source.dart';
+import 'package:number_trivia/features/number_trivia/data/models/number_trivia_models.dart';
 import 'package:number_trivia/features/number_trivia/data/repositories/number_trivia_repository_impl.dart';
+import 'package:number_trivia/features/number_trivia/domain/entities/number_trivia.dart';
 
 class MockRemoteDataSource extends Mock implements NumberTriviaRemoteDataSource{}
 
@@ -14,10 +16,10 @@ class MockNetworkInfo extends Mock implements NetworkInfo{}
 
 
 void main(){
-  NumberTriviaRepositoryImpl repositoryImpl;
+ late NumberTriviaRepositoryImpl repositoryImpl;
   MockRemoteDataSource mockRemoteDataSource;
   MockLocalDataSource mockLocalDataSource;
-  MockNetworkInfo mockNetworkInfo;
+ late MockNetworkInfo mockNetworkInfo;
 
   setUp(() {
     mockLocalDataSource =MockLocalDataSource();
@@ -31,4 +33,20 @@ void main(){
     );
 
   });
+
+
+  group("getConcreteNumberTrivia", () { 
+const tNumber=1;
+const tNumberTriviaModel=NumberTriviaModel(number: tNumber, text: "test trivia");
+const NumberTrivia tNumbertrivia=tNumberTriviaModel;
+
+    test("should check if the device is online", ()async {
+      when(mockNetworkInfo.isConnected).thenAnswer((_) async => true);
+
+      repositoryImpl.getConcreteNumberTrivia(tNumber);
+
+      verify(mockNetworkInfo.isConnected);
+
+
+    });});
 }
