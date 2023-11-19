@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flutter/foundation.dart';
 import 'package:number_trivia/core/error/exceptions.dart';
 import 'package:number_trivia/core/error/failure.dart';
 import 'package:number_trivia/core/platform/network_info.dart';
@@ -18,19 +19,27 @@ class NumberTriviaRepositoryImpl implements NumberTriviaRepository {
       required this.networkInfo});
 
   @override
-  Future<Either<Failure, NumberTrivia>> getConcreteNumberTrivia(
+  Future<Either<Failure, NumberTrivia>>? getConcreteNumberTrivia(
       int number) async {
+    if (kDebugMode) {
+      print("print the fucking shit networkInfo $networkInfo");
+    }
     if (await networkInfo.isConnected) {
       try {
         final remoteTrivia =
             await remoteDataSource.getConcreteNumberTrivia(number);
-     await   localDataSource.cacheNumberTrivia(remoteTrivia!);
+        await localDataSource.cacheNumberTrivia(remoteTrivia);
         return Right(remoteTrivia);
       } on ServerException {
         return Left(ServerFailure());
       }
     } else {
-      return Left(ServerFailure());
+      try {
+        final localTrivia = await localDataSource.getLastNumberTrvia();
+        return Right(localTrivia);
+      } on CacheException {
+        return Left(CacheFailure());
+      }
     }
   }
 
