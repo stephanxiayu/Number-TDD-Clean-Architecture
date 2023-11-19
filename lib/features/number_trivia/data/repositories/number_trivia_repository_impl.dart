@@ -35,8 +35,8 @@ class NumberTriviaRepositoryImpl implements NumberTriviaRepository {
       }
     } else {
       try {
-        final localTrivia = await localDataSource.getLastNumberTrvia();
-        return Right(localTrivia);
+        final localTrivia = await localDataSource.getLastNumberTrivia();
+        return Right(localTrivia!);
       } on CacheException {
         return Left(CacheFailure());
       }
